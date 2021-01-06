@@ -2,6 +2,11 @@ package pagerank
 
 type NodeID string
 
+// OutDegree is the number of neighbors of a node based on outgoing edges
+func (n *NodeID) String() string {
+	return n.String()
+}
+
 type Node struct {
 	Id       NodeID
 	Rank     float64

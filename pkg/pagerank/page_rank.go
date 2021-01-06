@@ -3,6 +3,7 @@ package pagerank
 import (
 	"fmt"
 	"math"
+	"sort"
 	"strconv"
 )
 
@@ -12,6 +13,7 @@ type PageRank struct {
 	Tolerance float64 // Tolerance
 	N         int     // N is the amount of nodes in the graph
 	Iteration uint    // Iteration is the counter of iterations of the implementation
+	sortIndex []NodeID
 	*Graph
 }
 
@@ -40,6 +42,8 @@ func (pr *PageRank) CalcPageRank() {
 	pr.InitializeNodes()
 	// iterate unit convergence
 	for pr.Iteration = uint(0); pr.Iteration <= pr.MaxIter; pr.Iteration++ {
+		// fmt.Println("--------------------------------------------")
+		// fmt.Println("\t Iteration: ", pr.Iteration, "/", pr.MaxIter)
 		// init the l1Err error
 		l1Err := 0.0
 		// iterate over nodes in graph
@@ -52,20 +56,28 @@ func (pr *PageRank) CalcPageRank() {
 				// calculate the new rank based on the current rank and the out-degree
 				// (out-degree is the number of neighbors of pr node)
 				currentRankDividedByOutDegree := cursorNode.Rank / float64(cursorNode.OutDegree())
+				// fmt.Println(nodeKey, edge.From.Id, "\t\t", cursorNode.Rank, "/", float64(cursorNode.OutDegree()), "=", currentRankDividedByOutDegree)
 				// add the result to the sum
 				rankSumOfConnectedNode += currentRankDividedByOutDegree
+				// fmt.Println(nodeKey, edge.From.Id, rankSumOfConnectedNode)
 			}
 			newRank := 1/float64(pr.N) + pr.Alpha*rankSumOfConnectedNode
+			//fmt.Println(nodeKey, "new rank", newRank)
 			// compute the L1 norm
 			absErr := math.Abs(newRank - pr.Nodes[nodeKey].Rank)
+			// fmt.Println(nodeKey, "absErr", newRank, "-", pr.Nodes[nodeKey].Rank, "=", absErr)
 			l1Err += absErr
 			// set the new rank value to the current node
 			pr.Nodes[nodeKey].Rank = newRank
 		}
+		// fmt.Println("\t new err", l1Err)
 		// check if the L1 error is smaller than the initial tolerance
+		// fmt.Println(l1Err, pr.Tolerance, l1Err < pr.Tolerance)
 		if l1Err < pr.Tolerance {
+			// fmt.Println("terminate")
 			// norm the results by dividing by the sum
 			rankSum := pr.SumTotalNodeRank()
+			// fmt.Println("terminate")
 			for _, node := range pr.Nodes {
 				node.Rank = node.Rank / rankSum
 			}
@@ -104,7 +116,7 @@ func (pr *PageRank) SumTotalNodeRank() (value float64) {
 
 // To String method
 func (pr *PageRank) String() string {
-	res := "Pagerank \n"
+	res := "Page Rank \n"
 	res += "Nodes: " + strconv.Itoa(len(pr.Nodes)) + "\n"
 	res += "Iterations: " + strconv.Itoa(int(pr.Iteration)) + "\n"
 	res += "----------------------------------\n"
@@ -114,4 +126,44 @@ func (pr *PageRank) String() string {
 	}
 	res += "----------------------------------\n"
 	return res
+}
+
+func (pr *PageRank) Len() int {
+	pr.sortIndex = make([]NodeID, len(pr.Nodes))
+	i := 0
+	for _, k := range pr.Nodes {
+		pr.sortIndex[i] = k.Id
+		i++
+	}
+	return i
+}
+
+func (pr *PageRank) Less(i, j int) bool {
+	// use the sort map to resolve the index to the node
+	firstNodeID := pr.sortIndex[i]
+	secondNodeID := pr.sortIndex[j]
+	return pr.Nodes[firstNodeID].Rank < pr.Nodes[secondNodeID].Rank
+}
+
+func (pr *PageRank) Swap(i, j int) {
+	pr.sortIndex[i], pr.sortIndex[j] = pr.sortIndex[j], pr.sortIndex[i]
+	return
+}
+
+func (pr *PageRank) OrderResults() {
+	sort.Sort(pr)
+}
+
+func (pr *PageRank) GetMinToMaxOrder() []NodeID {
+	return pr.sortIndex
+}
+
+func (pr *PageRank) GetMaxToMinOrder() []NodeID {
+	s := make([]NodeID, len(pr.sortIndex))
+	copy(s, pr.sortIndex)
+	// reverse order
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+	return s
 }
