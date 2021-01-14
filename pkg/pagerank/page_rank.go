@@ -118,6 +118,7 @@ func (pr *PageRank) SumTotalNodeRank() (value float64) {
 func (pr *PageRank) String() string {
 	res := "Page Rank \n"
 	res += "Nodes: " + strconv.Itoa(len(pr.Nodes)) + "\n"
+	res += "Edges: " + strconv.Itoa(len(pr.Edges)) + "\n"
 	res += "Iterations: " + strconv.Itoa(int(pr.Iteration)) + "\n"
 	res += "----------------------------------\n"
 	for _, n := range pr.Nodes {
