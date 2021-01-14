@@ -39,3 +39,28 @@ func TestSortPageRank(t *testing.T) {
 	}
 
 }
+
+func TestNewPageRankAddEdge(t *testing.T) {
+	pr := NewPageRank(g)
+	// calc initial
+	pr.CalcPageRank()
+	fmt.Println(pr)
+	// add edge and calc again
+	g.AddEdge("3", "4")
+	pr.CalcPageRank()
+	fmt.Println(pr)
+	// add more edges
+	g.AddEdge("4", "0")
+	g.AddEdge("4", "1")
+	pr.CalcPageRank()
+	fmt.Println(pr)
+}
+
+func TestNewPageRankAddEdgeInitial(t *testing.T) {
+	g.AddEdge("3", "4")
+	g.AddEdge("4", "0")
+	g.AddEdge("4", "1")
+	pr := NewPageRank(g)
+	pr.CalcPageRank()
+	fmt.Println(pr)
+}
