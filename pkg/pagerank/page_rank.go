@@ -45,8 +45,8 @@ func (pr *PageRank) CalcPageRank() {
 	pr.InitializeNodes()
 	// iterate unit convergence
 	for pr.Iteration = uint(0); pr.Iteration <= pr.MaxIter; pr.Iteration++ {
-		// fmt.Println("--------------------------------------------")
-		// fmt.Println("\t Iteration: ", pr.Iteration, "/", pr.MaxIter)
+		fmt.Println("--------------------------------------------")
+		fmt.Println("\t Iteration: ", pr.Iteration, "/", pr.MaxIter)
 		// init the l1Err error
 		l1Err := 0.0
 		// iterate over nodes in graph
@@ -73,7 +73,7 @@ func (pr *PageRank) CalcPageRank() {
 			// set the new rank value to the current node
 			pr.Nodes[nodeKey].Rank = newRank
 		}
-		// fmt.Println("\t new err", l1Err)
+		fmt.Println("\t new err", l1Err)
 		// check if the L1 error is smaller than the initial tolerance
 		// fmt.Println(l1Err, pr.Tolerance, l1Err < pr.Tolerance)
 		if l1Err < pr.Tolerance {
