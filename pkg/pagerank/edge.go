@@ -1,7 +1,9 @@
 package pagerank
 
+// EdgeID is a unique identifier for an edge
 type EdgeID string
 
+// Edge represents an edge in the graph
 type Edge struct {
 	Id     EdgeID
 	From   *Node
@@ -9,10 +11,17 @@ type Edge struct {
 	Weight float64
 }
 
+// GenerateEdgeID generates a new edge ID
 func GenerateEdgeID(from, to *Node) EdgeID {
-	return EdgeID(from.Id + ":" + to.Id)
+	return generateEdgeIDFromNodeIDs(from.Id, to.Id)
 }
 
+// generateEdgeIDFromNodeIDs generates a new edge ID
+func generateEdgeIDFromNodeIDs(from, to NodeID) EdgeID {
+	return EdgeID(from + ":" + to)
+}
+
+// NewEdge creates a new edge
 func NewEdge(from, to *Node, weight float64) *Edge {
 	edgeID := GenerateEdgeID(from, to)
 	edge := Edge{

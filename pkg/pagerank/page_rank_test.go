@@ -5,10 +5,10 @@ import (
 	"testing"
 )
 
-var g = NewGraph()
+var prGraph = NewGraph()
 
 func init() {
-	g.AddEdge("0", "1").
+	prGraph.AddEdge("0", "1").
 		AddEdge("0", "2").
 		AddEdge("1", "0").
 		AddEdge("1", "2").
@@ -18,13 +18,13 @@ func init() {
 }
 
 func TestNewPageRank(t *testing.T) {
-	pr := NewPageRank(g)
+	pr := NewPageRank(prGraph)
 	pr.CalcPageRank()
 	fmt.Println(pr)
 }
 
 func TestSortPageRank(t *testing.T) {
-	pr := NewPageRank(g)
+	pr := NewPageRank(prGraph)
 	pr.CalcPageRank()
 	pr.OrderResults()
 
@@ -41,26 +41,26 @@ func TestSortPageRank(t *testing.T) {
 }
 
 func TestNewPageRankAddEdge(t *testing.T) {
-	pr := NewPageRank(g)
+	pr := NewPageRank(prGraph)
 	// calc initial
 	pr.CalcPageRank()
 	fmt.Println(pr)
 	// add edge and calc again
-	g.AddEdge("3", "4")
+	prGraph.AddEdge("3", "4")
 	pr.CalcPageRank()
 	fmt.Println(pr)
 	// add more edges
-	g.AddEdge("4", "0")
-	g.AddEdge("4", "1")
+	prGraph.AddEdge("4", "0")
+	prGraph.AddEdge("4", "1")
 	pr.CalcPageRank()
 	fmt.Println(pr)
 }
 
 func TestNewPageRankAddEdgeInitial(t *testing.T) {
-	g.AddEdge("3", "4")
-	g.AddEdge("4", "0")
-	g.AddEdge("4", "1")
-	pr := NewPageRank(g)
+	prGraph.AddEdge("3", "4")
+	prGraph.AddEdge("4", "0")
+	prGraph.AddEdge("4", "1")
+	pr := NewPageRank(prGraph)
 	pr.CalcPageRank()
 	fmt.Println(pr)
 }

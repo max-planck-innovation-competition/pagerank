@@ -7,6 +7,7 @@ import (
 	"strconv"
 )
 
+// PageRank is a struct that contains the page rank implementation
 type PageRank struct {
 	Alpha     float64 // Alpha is the damping parameter for PageRank, default=0.85.
 	MaxIter   uint    // MaxIter is the max amount of iterations
@@ -17,6 +18,7 @@ type PageRank struct {
 	*Graph
 }
 
+// NewPageRank creates a new PageRank implementation.
 func NewPageRank(g *Graph) *PageRank {
 	pr := PageRank{
 		Alpha:     0.85,
@@ -27,6 +29,7 @@ func NewPageRank(g *Graph) *PageRank {
 	return &pr
 }
 
+// CalcPageRank calculates the PageRank of the graph
 func (pr *PageRank) CalcPageRank() {
 	// check if edges are empty
 	if len(pr.Edges) == 0 {
@@ -87,6 +90,7 @@ func (pr *PageRank) CalcPageRank() {
 	panic("PageRank did not converge in " + strconv.Itoa(int(pr.MaxIter)) + " iterations.")
 }
 
+// RemoveSelfLoops removes self loops from the graph.
 func (pr *PageRank) RemoveSelfLoops() {
 	// Remove self loops in place
 	// no new allocations
@@ -129,6 +133,7 @@ func (pr *PageRank) String() string {
 	return res
 }
 
+// Len returns the length of the sortIndex
 func (pr *PageRank) Len() int {
 	pr.sortIndex = make([]NodeID, len(pr.Nodes))
 	i := 0
@@ -139,6 +144,7 @@ func (pr *PageRank) Len() int {
 	return i
 }
 
+// Less orders the sortIndex by the rank of the nodes
 func (pr *PageRank) Less(i, j int) bool {
 	// use the sort map to resolve the index to the node
 	firstNodeID := pr.sortIndex[i]
@@ -146,19 +152,23 @@ func (pr *PageRank) Less(i, j int) bool {
 	return pr.Nodes[firstNodeID].Rank < pr.Nodes[secondNodeID].Rank
 }
 
+// Swap swaps the sortIndex
 func (pr *PageRank) Swap(i, j int) {
 	pr.sortIndex[i], pr.sortIndex[j] = pr.sortIndex[j], pr.sortIndex[i]
 	return
 }
 
+// OrderResults orders the results by the rank of the nodes
 func (pr *PageRank) OrderResults() {
 	sort.Sort(pr)
 }
 
+// GetMinToMaxOrder returns the order from min to max
 func (pr *PageRank) GetMinToMaxOrder() []NodeID {
 	return pr.sortIndex
 }
 
+// GetMaxToMinOrder returns the order from max to min
 func (pr *PageRank) GetMaxToMinOrder() []NodeID {
 	s := make([]NodeID, len(pr.sortIndex))
 	copy(s, pr.sortIndex)
