@@ -7,10 +7,8 @@ import (
 	"os"
 )
 
-// GenerateGraphFromCSV generates a graph from a CSV file.
-func GenerateGraphFromCSV(filename string, skipFirst bool, sourceColIndex, destinationColIndex int) (g *Graph, err error) {
-	// init graph
-	g = NewGraph()
+// AddNodesFromCSV adds nodes to a graph from a CSV file.
+func (g *Graph) AddNodesFromCSV(filename string, skipFirst bool, sourceColIndex, destinationColIndex int) (err error) {
 	// open file
 	file, err := os.Open(filename)
 	if err != nil {
@@ -41,7 +39,7 @@ func GenerateGraphFromCSV(filename string, skipFirst bool, sourceColIndex, desti
 			if err == io.EOF {
 				break
 			}
-			return nil, err
+			return err
 		}
 		if lineCounter == 0 && skipFirst {
 			lineCounter++
@@ -57,7 +55,6 @@ func GenerateGraphFromCSV(filename string, skipFirst bool, sourceColIndex, desti
 		if lineCounter%100000 == 0 {
 			fmt.Printf("%d lines processed\n", lineCounter)
 		}
-
 	}
 	return
 }

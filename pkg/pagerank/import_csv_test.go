@@ -6,7 +6,8 @@ import (
 )
 
 func TestGenerateGraphFromCSV(t *testing.T) {
-	g, err := GenerateGraphFromCSV("./test-data/test.csv", true, 0, 1)
+	g := NewGraph()
+	err := g.AddNodesFromCSV("./test-data/test.csv", true, 0, 1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -15,5 +16,13 @@ func TestGenerateGraphFromCSV(t *testing.T) {
 	fmt.Println("nodes", g.GetAmountOfNodes())
 	pr := NewPageRank(g)
 	pr.CalcPageRank()
-	fmt.Println("PageRank", pr.GetMaxToMinOrder())
+	pr.OrderResults()
+	fmt.Println("Max to Min")
+	for i, k := range pr.GetMaxToMinOrder() {
+		fmt.Println("ID:", k, "\t\tRank:", pr.Nodes[k].Rank)
+		if i > 1000 {
+			break
+		}
+	}
+
 }

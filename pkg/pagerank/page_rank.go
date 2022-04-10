@@ -160,16 +160,23 @@ func (pr *PageRank) Swap(i, j int) {
 
 // OrderResults orders the results by the rank of the nodes
 func (pr *PageRank) OrderResults() {
+	fmt.Println("Ordering results")
 	sort.Sort(pr)
 }
 
 // GetMinToMaxOrder returns the order from min to max
 func (pr *PageRank) GetMinToMaxOrder() []NodeID {
+	if len(pr.sortIndex) == 0 {
+		pr.OrderResults()
+	}
 	return pr.sortIndex
 }
 
 // GetMaxToMinOrder returns the order from max to min
 func (pr *PageRank) GetMaxToMinOrder() []NodeID {
+	if len(pr.sortIndex) == 0 {
+		pr.OrderResults()
+	}
 	s := make([]NodeID, len(pr.sortIndex))
 	copy(s, pr.sortIndex)
 	// reverse order
