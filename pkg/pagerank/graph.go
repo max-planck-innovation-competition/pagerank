@@ -160,3 +160,13 @@ func (g *Graph) String() string {
 	}
 	return res
 }
+
+// GetSingleNodes returns all nodes with no incoming or outgoing edges
+func (g *Graph) GetSingleNodes() (result []*Node) {
+	for _, node := range g.Nodes {
+		if len(node.Incoming) == 0 && len(node.Outgoing) == 0 {
+			result = append(result, node)
+		}
+	}
+	return
+}

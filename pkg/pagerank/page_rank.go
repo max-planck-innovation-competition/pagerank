@@ -1,8 +1,10 @@
 package pagerank
 
 import (
+	"encoding/csv"
 	"fmt"
 	"math"
+	"os"
 	"sort"
 	"strconv"
 )
@@ -184,4 +186,36 @@ func (pr *PageRank) GetMaxToMinOrder() []NodeID {
 		s[i], s[j] = s[j], s[i]
 	}
 	return s
+}
+
+// ExportToCSV exports the results of the page rank algorithm to a csv file
+func (pr *PageRank) ExportToCSV(fileName string) {
+	fmt.Println("Exporting results to csv")
+	// create the file
+	file, err := os.Create(fileName)
+	if err != nil {
+		panic(err)
+	}
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			panic(err)
+		}
+	}(file)
+	// create the writer
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
+	// write the header
+	err = writer.Write([]string{"Node", "Rank"})
+	if err != nil {
+		panic(err)
+	}
+	// write the results
+	for _, n := range pr.Nodes {
+		// write with writer with 10 digits
+		err = writer.Write([]string{string(n.Id), fmt.Sprintf("%.10f", n.Rank)})
+		if err != nil {
+			panic(err)
+		}
+	}
 }

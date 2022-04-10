@@ -24,5 +24,5 @@ func TestGenerateGraphFromCSV(t *testing.T) {
 			break
 		}
 	}
-
+	pr.ExportToCSV("test-data/test-out.csv")
 }
