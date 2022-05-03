@@ -213,7 +213,7 @@ func (pr *PageRank) ExportToCSV(fileName string) {
 	// write the results
 	for _, n := range pr.Nodes {
 		// write with writer with 10 digits
-		err = writer.Write([]string{string(n.Id), fmt.Sprintf("%.10f", n.Rank)})
+		err = writer.Write([]string{string(n.Id), fmt.Sprintf("%.16f", n.Rank)})
 		if err != nil {
 			panic(err)
 		}
