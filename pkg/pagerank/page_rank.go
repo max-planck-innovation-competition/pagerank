@@ -7,16 +7,18 @@ import (
 	"os"
 	"sort"
 	"strconv"
+	"sync"
 )
 
 // PageRank is a struct that contains the page rank implementation
 type PageRank struct {
-	Alpha     float64 // Alpha is the damping parameter for PageRank, default=0.85.
-	MaxIter   uint    // MaxIter is the max amount of iterations
-	Tolerance float64 // Tolerance
-	N         int     // N is the amount of nodes in the graph
-	Iteration uint    // Iteration is the counter of iterations of the implementation
-	sortIndex []NodeID
+	Alpha     float64  // Alpha is the damping parameter for PageRank, default=0.85.
+	MaxIter   uint     // MaxIter is the max amount of iterations
+	Tolerance float64  // Tolerance
+	N         int      // N is the amount of nodes in the graph
+	Iteration uint     // Iteration is the counter of iterations of the implementation
+	sortIndex []NodeID // sortIndex stores the sorted index of the results
+	mutex     sync.Mutex
 	*Graph
 }
 
@@ -73,7 +75,9 @@ func (pr *PageRank) CalcPageRank() {
 			// fmt.Println(nodeKey, "absErr", newRank, "-", pr.Nodes[nodeKey].Rank, "=", absErr)
 			l1Err += absErr
 			// set the new rank value to the current node
+			pr.mutex.Lock()
 			pr.Nodes[nodeKey].Rank = newRank
+			pr.mutex.Unlock()
 		}
 		fmt.Println("\t new err", l1Err)
 		// check if the L1 error is smaller than the initial tolerance
