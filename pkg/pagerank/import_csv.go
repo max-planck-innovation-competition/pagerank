@@ -46,12 +46,10 @@ func (g *Graph) AddNodesFromCSV(filename string, skipFirst bool, sourceColIndex,
 			continue
 		}
 		lineCounter++
+
 		// add edge
-		if record[destinationColIndex] != "0" {
-			g.AddEdge(NodeID("publ"+record[sourceColIndex]), NodeID("publ"+record[destinationColIndex]))
-		} else if record[destinationColIndex+1] != "0" {
-			g.AddEdge(NodeID("publ"+record[sourceColIndex]), NodeID("appln"+record[destinationColIndex+1]))
-		}
+		g.AddEdge(NodeID(record[sourceColIndex]), NodeID(record[destinationColIndex]))
+
 		if lineCounter%100000 == 0 {
 			fmt.Printf("%d lines processed\n", lineCounter)
 		}
