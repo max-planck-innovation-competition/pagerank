@@ -19,6 +19,7 @@ type PageRank struct {
 	Iteration uint     // Iteration is the counter of iterations of the implementation
 	sortIndex []NodeID // sortIndex stores the sorted index of the results
 	mutex     sync.Mutex
+	l1Err     float64
 	*Graph
 }
 
@@ -52,7 +53,7 @@ func (pr *PageRank) CalcPageRank() {
 		fmt.Println("--------------------------------------------")
 		fmt.Println("\t Iteration: ", pr.Iteration, "/", pr.MaxIter)
 		// init the l1Err error
-		l1Err := 0.0
+		pr.l1Err = 0.0
 		// iterate over nodes in graph
 		for nodeKey := range pr.Nodes {
 			// calculate the sum of the surrounding nodes of the current node
@@ -73,16 +74,14 @@ func (pr *PageRank) CalcPageRank() {
 			// compute the L1 norm
 			absErr := math.Abs(newRank - pr.Nodes[nodeKey].Rank)
 			// fmt.Println(nodeKey, "absErr", newRank, "-", pr.Nodes[nodeKey].Rank, "=", absErr)
-			l1Err += absErr
+			pr.l1Err += absErr
 			// set the new rank value to the current node
-			pr.mutex.Lock()
 			pr.Nodes[nodeKey].Rank = newRank
-			pr.mutex.Unlock()
 		}
-		fmt.Println("\t new err", l1Err)
+		fmt.Println("\t new err", pr.l1Err)
 		// check if the L1 error is smaller than the initial tolerance
 		// fmt.Println(l1Err, pr.Tolerance, l1Err < pr.Tolerance)
-		if l1Err < pr.Tolerance {
+		if pr.l1Err < pr.Tolerance {
 			// fmt.Println("terminate")
 			// norm the results by dividing by the sum
 			rankSum := pr.SumTotalNodeRank()

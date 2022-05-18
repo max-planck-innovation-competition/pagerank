@@ -37,7 +37,22 @@ func TestSortPageRank(t *testing.T) {
 	for _, k := range pr.GetMinToMaxOrder() {
 		fmt.Println("ID:", k, "\t\tRank:", pr.Nodes[k].Rank)
 	}
+}
 
+func TestSortPageRankMultiThread(t *testing.T) {
+	pr := NewPageRank(prGraph)
+	pr.CalcPageRankMultiThread()
+	pr.OrderResults()
+
+	fmt.Println("Max to Min")
+	for _, k := range pr.GetMaxToMinOrder() {
+		fmt.Println("ID:", k, "\t\tRank:", pr.Nodes[k].Rank)
+	}
+
+	fmt.Println("Min to Max")
+	for _, k := range pr.GetMinToMaxOrder() {
+		fmt.Println("ID:", k, "\t\tRank:", pr.Nodes[k].Rank)
+	}
 }
 
 func TestNewPageRankAddEdge(t *testing.T) {
